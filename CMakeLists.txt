@@ -4,9 +4,11 @@ project(zlsmart)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(zlsmart
-        base/Noncopyable.h
-        base/Socket.cpp
-        base/Socket.h
-        base/InetAddress.cpp
-        base/InetAddress.h
+        Buffer.h
+        main.cpp
+        Noncopyable.h
+        ReadConfig.cpp
+        ReadConfig.h
+        Logger.cpp
+        Logger.h
         )
