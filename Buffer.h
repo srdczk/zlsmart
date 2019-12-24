@@ -1,16 +1,16 @@
 //
-// Created by admin on 2019/12/23.
+// Created by srdczk on 2019/12/23.
 //
 
-#ifndef BUFFER_HPP
-#define BUFFER_HPP
+#ifndef BUFFER_H
+#define BUFFER_H
 
-#include "Noncopyable.h"
+#include "NotCopyable.h"
 #include <string>
 
 namespace zlsmart {
     template <typename T>
-    class Buffer : public Noncopyable {
+    class Buffer : public NotCopyable {
     public:
         Buffer(): Buffer(0) {}
 

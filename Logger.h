@@ -1,59 +1,58 @@
 //
-// Created by admin on 2019/12/23.
+// Created by srczk on 2019/12/23.
 //
 
 #ifndef LOGGER_H
 #define LOGGER_H
 
 #include <memory>
-#include <vector>
-#include <fstream>
-#include <mutex>
-#include <atomic>
-#include <condition_variable>
 #include <thread>
-#include "Noncopyable.h"
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+#include <atomic>
+#include <fstream>
+#include "NotCopyable.h"
 
 namespace zlsmart {
     enum class Level { INFO, WARN, ERROR };
-class Logger : public Noncopyable {
+    // 做成 单例模式
+    class Logger : public NotCopyable {
     public:
-        using cond = std::condition_variable;
         using LoggerPtr = std::shared_ptr<Logger>;
-        static const LoggerPtr &instance();
-        void stop();
-        void append(Level, std::initializer_list<std::string> );
         ~Logger();
+        // 单例模式 获取唯一实例
+        static const LoggerPtr &instance();
+        // 追加 日志, 向外界提供的接口, 会被多个线程调用
+        void append(Level, std::initializer_list<std::string>);
+        // 停止, 调用 join 等待 写入 完成
+        void stop();
     private:
+        // 构造函数
         explicit Logger(const std::string &);
-
-        void writeLog();
-
-        // 多线程 只 初始化 一次
+        static std::string errorHandler(int error);
         static void init();
-
-        static std::string handError(int error);
-
+        // 写入日志, 线程 该干的活儿
+        void writeLog();
         static LoggerPtr ptr_;
-        // 多线程 只会 初始 化 一次, 保证线程 安全
+        // 多线程 只初始化 一次
         static pthread_once_t ponce_;
-        // 写入 流
-        std::ofstream out_;
-        std::shared_ptr<std::thread> thread_;
+        // 缓冲区的大小
         static const unsigned BUFSIZE;
-        std::vector<std::string> curWirte_; // 待写入的日志
-        // 在写入日志
-        std::vector<std::string> write_;
-        // 记录两个缓冲的 大小
-        unsigned curSize_, writeSize_;
-        // 互斥量
+        // 文件输出流
+        std::ofstream out_;
+        // 主要 的 工作线程, 负责 写入 log
+        std::shared_ptr<std::thread> thread_;
         std::mutex mutex_;
-        // 两个 条件变量 <--> 生产者 消费者模式
-        cond condA_;
-        cond condB_;
+        // 两个条件变量实现 append 和 write 的互斥操作
+        std::condition_variable condA_, condB_;
+        // 待写入 以及正在写入的 缓冲
+        std::vector<std::string> waitWrite_, write_;
+        // 两个缓冲 的 size
+        unsigned waitSize_, writeSize_;
+        // 是否正在 运行
         std::atomic<bool> running_;
     };
 }
 
-
-#endif //ZLSMART_LOGGER_H
+#endif //LOGGER_H

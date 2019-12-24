@@ -1,5 +1,5 @@
 //
-// Created by admin on 2019/12/23.
+// Created by srdczk on 2019/12/23.
 //
 
 #include <cstring>
@@ -15,8 +15,8 @@ namespace zlsmart {
         return ptr_;
     }
 
-    const std::string& ReadConfig::get(const std::string &key) {
-        if (!map_.count(key)) return "NotExist";
+    const std::string &ReadConfig::get(const std::string &key) {
+        if (!map_.count(key)) map_[key] = "NotExist";
         return map_[key];
     }
 

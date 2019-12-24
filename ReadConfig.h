@@ -1,5 +1,5 @@
 //
-// Created by admin on 2019/12/23.
+// Created by srdczk on 2019/12/23.
 //
 
 #ifndef READCONFIG_H
@@ -8,11 +8,11 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include "Noncopyable.h"
+#include "NotCopyable.h"
 
 namespace zlsmart {
     // 单例
-    class ReadConfig : public Noncopyable {
+    class ReadConfig : public NotCopyable {
     public:
         using ReadConfigPtr = std::shared_ptr<ReadConfig>;
         static ReadConfigPtr &instance();
