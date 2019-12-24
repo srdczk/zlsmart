@@ -12,3 +12,5 @@ add_executable(zlsmart
         Logger.cpp
         Logger.h
         )
+
+target_link_libraries(zlsmart pthread)
